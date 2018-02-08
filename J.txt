@@ -1,0 +1,20 @@
+3 folders:
+	- Client : Classes et interfaces pour la connexion client/serveur
+	- Serveur : Classes et interfaces 
+	- Metier : Définition des données métier
+		classes: Cartes, Joueurs, Croupier, Tables, Casino	
+
+Packages:
+	- Connexion
+	- ChoixPartie
+	- Partie
+
+Classes 
+	- Connexion
+		- BlackJackServeurInterface
+		- BlackJackServeurImpl (Singleton?)
+
+	- Connexion
+		- BlackJackClient (Singleton?)
+		- ClientAccesInterface
+		- ClientAccesImpl
