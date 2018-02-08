@@ -1,7 +1,7 @@
 3 folders:
 	- Client : Classes et interfaces pour la connexion client/serveur
 	- Serveur : Classes et interfaces 
-	- Metier : Définition des données métier
+	- Metier : DÃ©finition des donnÃ©es mÃ©tier
 		classes: Cartes, Joueurs, Croupier, Tables, Casino	
 
 Packages:
