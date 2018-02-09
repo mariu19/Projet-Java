@@ -9,20 +9,21 @@ import java.util.LinkedList;
 
 import Casino.Joueur;
 import Casino.JoueurInterface;
-import Client.AffichageClientInterface;
+import Client.BlackJackNotification;
 import JeuDeCartes.Paquet;
 
 public class BlackJackServeur extends UnicastRemoteObject implements BlackJackServeurInterface {
 	
 	private Paquet paquet = new Paquet();
-	private ArrayList<AffichageClientInterface> enregistrementClient = null;
+	private ArrayList<BlackJackNotification> enregistrementClient = null;
+	private BlackJackNotification notif;
 	private ArrayList<Joueur> listeJoueur;
 	private Paquet deck;
 	
 	
 	protected BlackJackServeur() throws RemoteException {
 		super();
-		enregistrementClient = new ArrayList<AffichageClientInterface>();
+		enregistrementClient = new ArrayList<BlackJackNotification>();
 		this.listeJoueur = new ArrayList<Joueur>();
 		deck = new Paquet();
 		deck.melanger();
@@ -44,21 +45,17 @@ public class BlackJackServeur extends UnicastRemoteObject implements BlackJackSe
 		 }
 
 	@Override
-	public int enregistrerNotification(String id, AffichageClientInterface affichageClient) throws RemoteException {
+	public synchronized void enregistrerNotification(String id, BlackJackNotification affichageClient) throws RemoteException {
 		// TODO Auto-generated method stub
-		enregistrementClient.add(affichageClient);
-		System.out.println("Enregistrement Client");
-		int n = enregistrementClient.indexOf(affichageClient);
+		this.setNotification(affichageClient);
+		this.enregistrementClient.add(affichageClient);
 		
-		return n;
 	}
 
 	@Override
-	public int enleverNotification(String id) throws RemoteException {
+	public synchronized void enleverNotification(String id) throws RemoteException {
 		// TODO Auto-generated method stub
-		enregistrementClient.remove(0);
-		
-		return 0;
+		this.setNotification(null);
 	}
 
 	@Override
@@ -72,7 +69,15 @@ public class BlackJackServeur extends UnicastRemoteObject implements BlackJackSe
 				listeJoueur.add(new Joueur(nom));
 				
 				try {
-					enregistrementClient.get(0).callback();
+					notif.notification();
+					
+					   for (BlackJackNotification str : enregistrementClient) {
+						
+						     str.notification();
+						   
+					 }
+
+					
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -84,5 +89,9 @@ public class BlackJackServeur extends UnicastRemoteObject implements BlackJackSe
 					nomJoueurs = nomJoueurs+"Joueur "+i+" : "+joueur.getNom()+"\n";
 					i++;
 				}
+	}
+	
+	public void setNotification(BlackJackNotification notif) {
+		this.notif = notif;
 	}
 }

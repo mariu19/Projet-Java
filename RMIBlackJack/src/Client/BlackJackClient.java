@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 import Serveur.BlackJackServeurInterface;
 
-public class BlackJackClient implements AffichageClientInterface, Serializable{
+public class BlackJackClient{
 
 	protected BlackJackClient() throws RemoteException {
 		super();
@@ -27,7 +27,7 @@ public class BlackJackClient implements AffichageClientInterface, Serializable{
 				String nom = null;
 				System.out.println("Nom joueur?");
 				nom = sc.nextLine();
-		        BlackJackClient client = new BlackJackClient();
+		        BlackJackNotificationImpl client = new BlackJackNotificationImpl(nom);
 		        serveur.enregistrerNotification(nom, client);
 				serveur.connexionJoueur(nom);
 		        
@@ -39,12 +39,7 @@ public class BlackJackClient implements AffichageClientInterface, Serializable{
 
 	}
 
-	@Override
-	public void callback() throws RemoteException {
-		// TODO Auto-generated method stub
-		System.out.println("Appel callback");
-		
-	}
+
 
 
 }
