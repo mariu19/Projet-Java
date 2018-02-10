@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.LinkedList;
 
 import Casino.Joueur;
@@ -19,11 +20,13 @@ public class BlackJackServeur extends UnicastRemoteObject implements BlackJackSe
 	private BlackJackNotification notif;
 	private ArrayList<Joueur> listeJoueur;
 	private Paquet deck;
+	private Hashtable<String, BlackJackNotification> listeEnregistrementClient = null;
 	
 	
 	protected BlackJackServeur() throws RemoteException {
 		super();
 		enregistrementClient = new ArrayList<BlackJackNotification>();
+		listeEnregistrementClient = new Hashtable<String, BlackJackNotification>();
 		this.listeJoueur = new ArrayList<Joueur>();
 		deck = new Paquet();
 		deck.melanger();
@@ -49,6 +52,7 @@ public class BlackJackServeur extends UnicastRemoteObject implements BlackJackSe
 		// TODO Auto-generated method stub
 		this.setNotification(affichageClient);
 		this.enregistrementClient.add(affichageClient);
+		this.listeEnregistrementClient.put(id, affichageClient);
 		
 	}
 
@@ -70,21 +74,13 @@ public class BlackJackServeur extends UnicastRemoteObject implements BlackJackSe
 				listeJoueur.add(new Joueur(nom));
 				
 				try {
-					notif.notification();
 					
-					   for (BlackJackNotification str : enregistrementClient) {
-						
-						    
-						    j = str.notification();
-						   
-					 }
-
+					listeEnregistrementClient.get(nom).notification(nom);
 					
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println(j);
 				System.out.println("Liste des joueurs connectés: ");
 				for (Joueur joueur : listeJoueur ) {
 					System.out.println("Joueur "+i+" : "+joueur.getNom());

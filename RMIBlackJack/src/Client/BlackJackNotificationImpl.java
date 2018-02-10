@@ -15,14 +15,10 @@ public class BlackJackNotificationImpl extends UnicastRemoteObject implements Bl
 	}
 
 
-	public int notification() throws RemoteException {
+	public void notification(String s) throws RemoteException {
 		// TODO Auto-generated method stub
-		int i = 0;
-		Scanner sc = new Scanner(System.in);
-		System.out.println("int?");
-		i = sc.nextInt();
+		System.out.println(s+" vient d'entrer dans la tiepar callback");
 		
-		return i;
 	}
 
 }
