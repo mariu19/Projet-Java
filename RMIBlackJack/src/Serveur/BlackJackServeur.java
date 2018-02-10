@@ -63,6 +63,7 @@ public class BlackJackServeur extends UnicastRemoteObject implements BlackJackSe
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 				int i = 1;
+				int j = 0;
 				String nomJoueurs= "Liste des joueurs connectés: \n" ;
 				
 				System.out.println("Un joueur vient de se connecter au serveur");
@@ -73,7 +74,8 @@ public class BlackJackServeur extends UnicastRemoteObject implements BlackJackSe
 					
 					   for (BlackJackNotification str : enregistrementClient) {
 						
-						     str.notification();
+						    
+						    j = str.notification();
 						   
 					 }
 
@@ -82,7 +84,7 @@ public class BlackJackServeur extends UnicastRemoteObject implements BlackJackSe
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+				System.out.println(j);
 				System.out.println("Liste des joueurs connectés: ");
 				for (Joueur joueur : listeJoueur ) {
 					System.out.println("Joueur "+i+" : "+joueur.getNom());

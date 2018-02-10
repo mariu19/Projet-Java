@@ -2,6 +2,7 @@ package Client;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Scanner;
 
 public class BlackJackNotificationImpl extends UnicastRemoteObject implements BlackJackNotification {
 
@@ -14,9 +15,14 @@ public class BlackJackNotificationImpl extends UnicastRemoteObject implements Bl
 	}
 
 
-	public void notification() throws RemoteException {
+	public int notification() throws RemoteException {
 		// TODO Auto-generated method stub
-		System.out.println("Appel callback");
+		int i = 0;
+		Scanner sc = new Scanner(System.in);
+		System.out.println("int?");
+		i = sc.nextInt();
+		
+		return i;
 	}
 
 }
