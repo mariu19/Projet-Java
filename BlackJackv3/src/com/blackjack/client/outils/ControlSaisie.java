@@ -40,11 +40,10 @@ public class ControlSaisie {
 	}
 
 	public boolean controleSaisie(String saisie) {
-		// TODO Auto-generated method stub
 		int i;
 		try {
 			 i = Integer.parseInt(saisie);
-			
+			 
 		} catch (NumberFormatException e) {
 			System.out.println("Erreur de saisie veuillez entrer un entier");
 			return false;
