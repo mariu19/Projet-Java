@@ -2,7 +2,6 @@ package com.blackjack.serveur.jeu;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
 
@@ -12,8 +11,6 @@ public class Table extends UnicastRemoteObject {
 	
 	private String nomTable;
 	private int tailleTable;
-	private int tailleTableMax;
-	private int tailleTablemin;
 	private Hashtable<String, Joueur> listeJoueur = null;
 	private Hashtable<String, Joueur> listedAttente = null;
 	private Hashtable<String, IcallbackClient> listeEnregistrementClient = null;
@@ -27,8 +24,6 @@ public class Table extends UnicastRemoteObject {
 		super();
 		this.nomTable = nomTable;
 		this.tailleTable = tailleTable;
-		this.tailleTableMax = 6;
-		this.tailleTablemin = 1;
 		this.listeJoueur = new Hashtable<String, Joueur>();
 		this.listedAttente = new Hashtable<String, Joueur>();
 		this.listeEnregistrementClient = new Hashtable<String, IcallbackClient>();
@@ -138,6 +133,25 @@ public class Table extends UnicastRemoteObject {
 		
 	}
 	
+	public void viderTable() {
+		
+		for (String key : this.getListeJoueur().keySet()) {
+			listeEnregistrementClient.remove(key);
+			listeJoueur.remove(key);
+		}
+		for (String key : this.getListedAttente().keySet()) {
+			listeEnregistrementClient.remove(key);
+			listedAttente.remove(key);
+		}
+	}
+	
+	
+	
+	public void retirerJoueur(String nom) {
+		listeEnregistrementClient.remove(nom);
+		listeJoueur.remove(nom);
+	}
+	
 	
 	public boolean isPartieDebute() {
 		return partieDebute;
@@ -214,6 +228,10 @@ public class Table extends UnicastRemoteObject {
 			croupier.getMain().clearMains();
 		}
 		
+		System.out.println("fin init partie");
+		//this.initPartie();
+		
+		/*
 		//Pour table créer par joueur
 		if(this.getTypeTable() == "T") {
 			continuerPartieTableTemp();
@@ -246,9 +264,10 @@ public class Table extends UnicastRemoteObject {
 				}
 			}
 			continuerPartieTablePerm();
-		}
+		}*/
 	
 	}
+	
 	
 	public void continuerPartieTableTemp() throws RemoteException{
 		int continuer = 0;

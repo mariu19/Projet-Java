@@ -41,7 +41,9 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 		t.ajouterJoueur(listeJoueur.get(nom), this.listeEnregistrementClient.get(nom)); 
 		System.out.println(nom+" vient de créer une table d'une taille de "+taille+" joueurs");
 		this.listeEnregistrementClient.get(nom).notificationRejointPartie("Table créee : "+t.toString());
-		t.initPartie();
+		this.debutPartie(t);
+		//t.initPartie();
+		
 	} 
 
 	public ArrayList<Table> getListeTable() {
@@ -74,7 +76,8 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 			this.listeTable.get(i).ajouterJoueur(listeJoueur.get(nom), this.listeEnregistrementClient.get(nom));
 			this.listeEnregistrementClient.get(nom).notificationRejointPartie("Vous avez rejoint la table suivante: "+this.listeTable.get(i).toString());
 			if((this.listeTable.get(i).getTypeTable() == "P") && (this.listeTable.get(i).getTotalJoueur() == 1)) {
-				this.listeTable.get(i).initPartie();
+				//this.listeTable.get(i).initPartie();
+				this.debutPartie(this.listeTable.get(i));
 			}
 			
 		} catch (IndexOutOfBoundsException e) {
@@ -98,7 +101,42 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 		return this.listeTable.get(i).toString();
 	}
 	
-	public void debutPartie (int i) throws RemoteException{
-		listeTable.get(i).initPartie();
+	public void debutPartie (Table t) throws RemoteException{
+		t.initPartie();
+		this.finPartie(t);
 	}
+	
+	public void finPartie (Table t) throws RemoteException {
+		//Si table créee par joueur, on demande au joueur si il veut continuer, on notifie les autres, sinon on appel détruire table
+		if(t.getTypeTable() == "T") {
+			
+			for (String key : t.getListeEnregistrementClient().keySet()) {
+				t.getListeEnregistrementClient().get(key).notificationRejointPartie("En attente du choix du créateur");
+			}
+			
+			int choix = this.listeEnregistrementClient.get(t.getNomTable()).continuerPartie();
+			
+			if(choix == 2) {
+				String createur = t.getNomTable();
+				t.getListeEnregistrementClient().get(t.getNomTable()).notificationRejointPartie("Le créateur de la partie a supprimé sa table, redirection vers le menu");
+				this.detruireTable(t);
+				this.listeEnregistrementClient.get(createur).menu(createur);
+			//Detruire la table après avoir envoyer sur le menu
+				
+			}
+			else {
+				this.debutPartie(t);
+			}
+			
+		}
+		
+	}
+	
+	public void detruireTable(Table t) {
+		System.out.println("appel detruire table");
+		t.viderTable();
+		this.listeTable.remove(t.getNumeroTable()-1);
+		System.out.println(this.listeTable.toString());
+	}
+
 }

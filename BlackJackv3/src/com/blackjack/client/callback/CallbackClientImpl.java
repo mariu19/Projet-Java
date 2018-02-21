@@ -28,14 +28,14 @@ public class CallbackClientImpl extends UnicastRemoteObject implements Icallback
 	}
 
 	@Override
-	public synchronized void notification(String s) throws RemoteException {
+	public void notification(String s) throws RemoteException {
 		// TODO Auto-generated method stub
 		System.out.println(s+", chargement du menu");
 		
 	}
 
 	@Override
-	public synchronized void menu(String s) throws RemoteException {
+	public void menu(String s) throws RemoteException {
 		// TODO Auto-generated method stub
 		try {
 			Icasino casino = (Icasino) Naming.lookup("//localhost/Casino");
@@ -148,7 +148,7 @@ public class CallbackClientImpl extends UnicastRemoteObject implements Icallback
 		boolean b = cs.controleContinuerPartie(saisie);
 		while (!b) {
 			saisie = sc.nextLine();
-			b = cs.controleHitStand(saisie);
+			b = cs.controleContinuerPartie(saisie);
 		}
 		choix = Integer.parseInt(saisie);
 		
