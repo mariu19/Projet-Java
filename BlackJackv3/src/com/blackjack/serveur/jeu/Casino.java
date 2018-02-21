@@ -118,10 +118,9 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 			int choix = this.listeEnregistrementClient.get(t.getNomTable()).continuerPartie();
 			
 			if(choix == 2) {
-				//this.detruireTable(t);
+				this.detruireTable(t);
 				for (String key : listeEnregistrementJoueurTable.keySet()) {
-					listeEnregistrementJoueurTable.get(key).notificationRejointPartie("Le créateur de la partie a supprimé sa table, redirection vers le menu");
-					listeEnregistrementJoueurTable.get(key).menu(key);
+					listeEnregistrementJoueurTable.get(key).notificationRejointPartie("Le créateur de la partie a supprimé sa table. Redirection vers le menu");
 				}
 
 			}
@@ -135,7 +134,6 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 	
 	public void detruireTable(Table t) {
 		System.out.println(t.getNomTable()+ " a détruit sa table: "+t.toString());
-		t.viderTable();
 		this.listeTable.remove(t.getNumeroTable()-1);
 		System.out.println(this.afficherTable());
 	}

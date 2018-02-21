@@ -46,7 +46,7 @@ public class CallbackClientImpl extends UnicastRemoteObject implements Icallback
 			saisie = sc.nextLine();
 			//choix = sc.nextInt();
 			boolean b= cs.controleEntierMenu(saisie);
-			
+		
 			while (!b) {
 				saisie = sc.nextLine();
 				b = cs.controleEntierMenu(saisie);
@@ -66,7 +66,6 @@ public class CallbackClientImpl extends UnicastRemoteObject implements Icallback
 				}
 				choix = Integer.parseInt(saisie);
 				casino.creerTable(nom, choix);
-				//casino.debutPartie(choix-1);
 			}
 			else {
 				System.out.println("Liste des tables saisir le numéro correspondant à la table pour la rejoindre");
@@ -158,4 +157,6 @@ public class CallbackClientImpl extends UnicastRemoteObject implements Icallback
 	public void unreferenced() {
 		System.out.println("connexion perdue");
 	}
+
+
 }

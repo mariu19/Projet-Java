@@ -29,8 +29,6 @@ public class ConnexionClient {
 		        serveur.enregistrerNotification(nom, client);
 		        serveur.connexionJoueur(nom);
 				
-		        
-				// Appel d'une méthode sur l'objet distant
 				} catch (Exception e) {
 				e.printStackTrace();
 				}
