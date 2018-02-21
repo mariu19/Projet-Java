@@ -88,14 +88,14 @@ public class ConnexionServerImpl extends UnicastRemoteObject implements Iconnexi
 			i++;
 		}
 		
-		try {
+	/*	try {
 			
 			listeEnregistrementClient.get(nom).menu(nom);
 			
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	
 	}
 

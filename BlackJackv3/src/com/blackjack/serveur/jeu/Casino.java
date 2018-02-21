@@ -101,11 +101,13 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 	}
 	
 	public void debutPartie (Table t) throws RemoteException{
+		System.out.println("Appel init");
 		t.initPartie();
-		this.finPartie(t);
+		//System.out.println("Appel fin");
+		//this.finPartie(t);
 	}
 	
-	public void finPartie (Table t) throws RemoteException {
+	public int finPartie (Table t) throws RemoteException {
 		//Si table créee par joueur, on demande au joueur si il veut continuer, on notifie les autres, sinon on appel détruire table
 		Hashtable<String, IcallbackClient> listeEnregistrementJoueurTable = t.getListeEnregistrementClient();
 		
@@ -118,18 +120,20 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 			int choix = this.listeEnregistrementClient.get(t.getNomTable()).continuerPartie();
 			
 			if(choix == 2) {
-				this.detruireTable(t);
+				/*this.detruireTable(t);
 				for (String key : listeEnregistrementJoueurTable.keySet()) {
 					listeEnregistrementJoueurTable.get(key).notificationRejointPartie("Le créateur de la partie a supprimé sa table. Redirection vers le menu");
-				}
-
+				}*/
+				return 0;
 			}
 			else {
 				this.debutPartie(t);
 			}
 			
 		}
-		
+	System.out.println("Fin fin partie");	
+	return 0;
+	
 	}
 	
 	public void detruireTable(Table t) {
