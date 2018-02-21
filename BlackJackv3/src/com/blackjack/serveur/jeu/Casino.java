@@ -38,9 +38,9 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 		// TODO Auto-generated method stub
 		Table t;
 		listeTable.add(t = new Table(listeTable.size()+1,nom , taille,"T"));
-		t.ajouterJoueur(listeJoueur.get(nom), this.listeEnregistrementClient.get(nom)); 
 		System.out.println(nom+" vient de créer une table d'une taille de "+taille+" joueurs");
 		this.listeEnregistrementClient.get(nom).notificationRejointPartie("Table créee : "+t.toString());
+		t.ajouterJoueur(listeJoueur.get(nom), this.listeEnregistrementClient.get(nom)); 
 		this.debutPartie(t);
 		//t.initPartie();
 		
@@ -74,7 +74,6 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 
 		try {
 			this.listeTable.get(i).ajouterJoueur(listeJoueur.get(nom), this.listeEnregistrementClient.get(nom));
-			this.listeEnregistrementClient.get(nom).notificationRejointPartie("Vous avez rejoint la table suivante: "+this.listeTable.get(i).toString());
 			if((this.listeTable.get(i).getTypeTable() == "P") && (this.listeTable.get(i).getTotalJoueur() == 1)) {
 				//this.listeTable.get(i).initPartie();
 				this.debutPartie(this.listeTable.get(i));
@@ -108,21 +107,23 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 	
 	public void finPartie (Table t) throws RemoteException {
 		//Si table créee par joueur, on demande au joueur si il veut continuer, on notifie les autres, sinon on appel détruire table
+		Hashtable<String, IcallbackClient> listeEnregistrementJoueurTable = t.getListeEnregistrementClient();
+		
 		if(t.getTypeTable() == "T") {
 			
-			for (String key : t.getListeEnregistrementClient().keySet()) {
-				t.getListeEnregistrementClient().get(key).notificationRejointPartie("En attente du choix du créateur");
+			for (String key : listeEnregistrementJoueurTable.keySet()) {
+				listeEnregistrementJoueurTable.get(key).notificationRejointPartie("Partie terminé, en attente du choix du créateur");
 			}
 			
 			int choix = this.listeEnregistrementClient.get(t.getNomTable()).continuerPartie();
 			
 			if(choix == 2) {
-				String createur = t.getNomTable();
-				t.getListeEnregistrementClient().get(t.getNomTable()).notificationRejointPartie("Le créateur de la partie a supprimé sa table, redirection vers le menu");
-				this.detruireTable(t);
-				this.listeEnregistrementClient.get(createur).menu(createur);
-			//Detruire la table après avoir envoyer sur le menu
-				
+				//this.detruireTable(t);
+				for (String key : listeEnregistrementJoueurTable.keySet()) {
+					listeEnregistrementJoueurTable.get(key).notificationRejointPartie("Le créateur de la partie a supprimé sa table, redirection vers le menu");
+					listeEnregistrementJoueurTable.get(key).menu(key);
+				}
+
 			}
 			else {
 				this.debutPartie(t);
@@ -133,10 +134,10 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 	}
 	
 	public void detruireTable(Table t) {
-		System.out.println("appel detruire table");
+		System.out.println(t.getNomTable()+ " a détruit sa table: "+t.toString());
 		t.viderTable();
 		this.listeTable.remove(t.getNumeroTable()-1);
-		System.out.println(this.listeTable.toString());
+		System.out.println(this.afficherTable());
 	}
 
 }

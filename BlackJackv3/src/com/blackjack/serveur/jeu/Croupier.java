@@ -1,7 +1,9 @@
 package com.blackjack.serveur.jeu;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.blackjack.client.callback.IcallbackClient;
 import com.blackjack.serveur.jeuDeCartes.Carte;
@@ -69,7 +71,7 @@ public class Croupier {
 		return hit;
 	}
 	
-	public void distribuer(Hashtable<String, Joueur> listeJoueur, Hashtable<String, IcallbackClient> listeEnregistrementClient) throws RemoteException {
+	public void distribuer(ConcurrentHashMap<String, Joueur> listeJoueur, Hashtable<String, IcallbackClient> listeEnregistrementClient) throws RemoteException {
 		
 		for (String key : listeJoueur.keySet()) {
 			Carte carte = deck.distribuer(listeJoueur.get(key).getMain());
@@ -120,7 +122,7 @@ public class Croupier {
 		affichageClient.notificationRejointPartie("Vous piochez "+ carte.toString());
 	}
 	
-	public void croupierPioche(Hashtable<String, Joueur> listeJoueur, Hashtable<String, IcallbackClient> listeEnregistrementClient) throws RemoteException {
+	public void croupierPioche(ConcurrentHashMap<String, Joueur> listeJoueur, Hashtable<String, IcallbackClient> listeEnregistrementClient) throws RemoteException {
 		for (String key : listeJoueur.keySet()) {
 			listeEnregistrementClient.get(key).notificationRejointPartie("Main du croupier :"+ this.getMain().toString());
 		}

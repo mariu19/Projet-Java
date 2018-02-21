@@ -2,7 +2,11 @@ package com.blackjack.serveur.jeu;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import com.blackjack.client.callback.IcallbackClient;
@@ -11,7 +15,7 @@ public class Table extends UnicastRemoteObject {
 	
 	private String nomTable;
 	private int tailleTable;
-	private Hashtable<String, Joueur> listeJoueur = null;
+	private ConcurrentHashMap<String, Joueur> listeJoueur = null;
 	private Hashtable<String, Joueur> listedAttente = null;
 	private Hashtable<String, IcallbackClient> listeEnregistrementClient = null;
 	private int numeroTable;
@@ -24,7 +28,7 @@ public class Table extends UnicastRemoteObject {
 		super();
 		this.nomTable = nomTable;
 		this.tailleTable = tailleTable;
-		this.listeJoueur = new Hashtable<String, Joueur>();
+		this.listeJoueur = new ConcurrentHashMap<String, Joueur>();
 		this.listedAttente = new Hashtable<String, Joueur>();
 		this.listeEnregistrementClient = new Hashtable<String, IcallbackClient>();
 		this.numeroTable = numeroTable;
@@ -52,7 +56,7 @@ public class Table extends UnicastRemoteObject {
 
 	
 	
-	public Hashtable<String, Joueur> getListeJoueur() {
+	public ConcurrentHashMap<String, Joueur> getListeJoueur() {
 		return listeJoueur;
 	}
 	
@@ -109,7 +113,7 @@ public class Table extends UnicastRemoteObject {
 			listeJoueur.put(j.getNom(),j);
 			System.out.println(j.getNom()+" vient de rejoindre la table "+this.toString());
 			System.out.println(this.toString());
-			
+			this.listeEnregistrementClient.get(j.getNom()).notificationRejointPartie("Vous avez rejoint la table suivante: "+this.toString()+"\nEn attente des autres joueurs");
 			
 			//Notification de l'arrivée du joueur à tous les autres joueurs de la table
 			for (String key : this.getListeEnregistrementClient().keySet()) {
@@ -139,10 +143,14 @@ public class Table extends UnicastRemoteObject {
 			listeEnregistrementClient.remove(key);
 			listeJoueur.remove(key);
 		}
-		for (String key : this.getListedAttente().keySet()) {
+		/*for (String key : this.getListedAttente().keySet()) {
 			listeEnregistrementClient.remove(key);
 			listedAttente.remove(key);
-		}
+		}*/
+		/*for (Iterator<String> iterator = listeJoueur.entrySet().iterator(); iterator.hasNext();) {
+		    iterator.remove();
+		}*/
+		
 	}
 	
 	
@@ -184,11 +192,11 @@ public class Table extends UnicastRemoteObject {
 		
 		}
 		
-		/*for (String key : this.listedAttente.keySet()) {
+		for (String key : this.listedAttente.keySet()) {
 			Joueur j = this.listedAttente.get(key);
 			this.listeJoueur.put(key, j);
 			this.listedAttente.remove(key);
-		}*/
+		}
 		
 		System.out.println("\nDébut partie ");	
 		this.setPartieDebute(true);
@@ -228,7 +236,6 @@ public class Table extends UnicastRemoteObject {
 			croupier.getMain().clearMains();
 		}
 		
-		System.out.println("fin init partie");
 		//this.initPartie();
 		
 		/*
