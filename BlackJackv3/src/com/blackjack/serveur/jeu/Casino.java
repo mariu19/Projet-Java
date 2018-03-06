@@ -136,10 +136,24 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 	
 	}
 	
-	public void detruireTable(Table t) {
+	public void detruireTable(String nomTable) throws RemoteException {
+		Table t = null;
+		for (int i = 0; i < listeTable.size(); i++) {
+			if (listeTable.get(i).getNomTable() == nomTable) {
+				t = listeTable.get(i);
+			}
+		}
+		//Notification a tous les joueurs que le créateur détruit sa table
+		
 		System.out.println(t.getNomTable()+ " a détruit sa table: "+t.toString());
 		this.listeTable.remove(t.getNumeroTable()-1);
 		System.out.println(this.afficherTable());
+	}
+
+	@Override
+	public void quitterTable(String nom, String nomtable) throws RemoteException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

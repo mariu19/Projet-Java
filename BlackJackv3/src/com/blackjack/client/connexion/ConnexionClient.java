@@ -15,6 +15,7 @@ public class ConnexionClient {
 	
 	private String nom;
 	private static ControlSaisie cs = new ControlSaisie();
+	private static ConnexionClient cc = new ConnexionClient();
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -40,7 +41,7 @@ public class ConnexionClient {
 		        Icasino casino = (Icasino) Naming.lookup("//localhost/Casino");
 				
 		        //Debut menu
-				String saisie = null;
+				/*String saisie = null;
 				System.out.println("Pour creer une table appuyez sur 1\nPour rejoindre une table appuyez sur 2");
 				Scanner sc1 = new Scanner(System.in);
 				saisie = sc1.nextLine();
@@ -95,19 +96,19 @@ public class ConnexionClient {
 					//casino.debutPartie(choix-1);
 					System.out.println("fin partie");
 					
-				}
+				}*/
 		        //Fonction pour choisir 1:crée 2:rejoindre 3:quit
 				//Fonction (ou a la fin de la fonction précédente) -> Voulez vous continuer si oui appel Menu
 				//Si créateur appel detruire table -> notif aux autres
 				//Pour chaque joueur qui quitte -> notif aux autres
-				
+				cc.menu(nom);
 				
 				} catch (Exception e) {
 				e.printStackTrace();
 				}
 	}
 
-	public void menu(String s) throws RemoteException {
+	public void menu(String nom) throws RemoteException {
 		// TODO Auto-generated method stub
 		try {
 			Icasino casino = (Icasino) Naming.lookup("//localhost/Casino");
@@ -164,7 +165,6 @@ public class ConnexionClient {
 					tablechoisie = casino.verifPlaceTable(nom, choix-1);
 				}
 				casino.rejoindreTable(nom, choix-1);
-				//casino.debutPartie(choix-1);
 			}
 			
 			
@@ -175,6 +175,23 @@ public class ConnexionClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void continuerPartie() {
+		int choix;
+		String saisie = null;
+		System.out.println("Voulez-vous continuer la partie: 1.Oui || 2.Non");
+		
+		Scanner sc = new Scanner(System.in);
+		saisie = sc.nextLine();
+		//choix = sc.nextInt();
+		boolean b= cs.controleEntierMenu(saisie);
+	
+		while (!b) {
+			saisie = sc.nextLine();
+			b = cs.controleEntierMenu(saisie);
+		}
+		
 	}
 	
 }
