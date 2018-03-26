@@ -10,4 +10,6 @@ public interface IcallbackClient extends Remote {
 	public void compte(int temps) throws RemoteException;
 	public int hit_or_stand(String s) throws RemoteException;
 	public int continuerPartie() throws RemoteException;
+	public void setFinPartie(boolean finPartie) throws RemoteException;
+	public void setChoix(int i) throws RemoteException;
 }

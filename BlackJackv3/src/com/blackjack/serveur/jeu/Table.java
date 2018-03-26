@@ -17,9 +17,9 @@ public class Table extends UnicastRemoteObject {
 	private int tailleTable;
 	private ConcurrentHashMap<String, Joueur> listeJoueur = null;
 	private Hashtable<String, Joueur> listedAttente = null;
-	private Hashtable<String, IcallbackClient> listeEnregistrementClient = null;
-	private int numeroTable;
-	private boolean partieDebute;
+	Hashtable<String, IcallbackClient> listeEnregistrementClient = null;
+	private int numeroTable, choixProprietaire;
+	private boolean partieDebute, partieFinie, bChoixProprietaire;
 	private Croupier croupier;
 	private String typeTable;
 
@@ -35,8 +35,18 @@ public class Table extends UnicastRemoteObject {
 		this.partieDebute = false;
 		this.croupier = new Croupier();
 		this.typeTable = typeTable;
+		this.partieFinie = false;
+		this.bChoixProprietaire = false;
+		this.choixProprietaire = 0;
 	}
 	
+	public void initPartie2() {
+		while (listeJoueur.size() == 0) {
+			
+		}
+		
+		System.out.println("Debut partie");
+	}
 	
 	
 	public String getTypeTable() {
@@ -143,14 +153,6 @@ public class Table extends UnicastRemoteObject {
 			listeEnregistrementClient.remove(key);
 			listeJoueur.remove(key);
 		}
-		/*for (String key : this.getListedAttente().keySet()) {
-			listeEnregistrementClient.remove(key);
-			listedAttente.remove(key);
-		}*/
-		/*for (Iterator<String> iterator = listeJoueur.entrySet().iterator(); iterator.hasNext();) {
-		    iterator.remove();
-		}*/
-		
 	}
 	
 	
@@ -177,6 +179,8 @@ public class Table extends UnicastRemoteObject {
 	}
 	
 	public void initPartie() throws RemoteException{
+		this.partieFinie = false;
+		
 		for(int i=15; i>=0;i--) {
 			
 			try {
@@ -235,7 +239,37 @@ public class Table extends UnicastRemoteObject {
 			listeJoueur.get(key).getMain().clearMains();
 			croupier.getMain().clearMains();
 		}
-	
+		
+
+		this.partieFinie = true;
 	}
+
+	public boolean isPartieFinie() {
+		return partieFinie;
+	}
+
+	public void setPartieFinie(boolean partieFinie) {
+		this.partieFinie = partieFinie;
+	}
+
+	public boolean isChoixProprietaire() {
+		return bChoixProprietaire;
+	}
+
+	public void setChoixProprietaire(boolean choixProprietaire) {
+		this.bChoixProprietaire = choixProprietaire;
+	}
+
+	public int getChoixProprietaire() {
+		return choixProprietaire;
+	}
+
+	public void setChoixProprietaire(int choixProprietaire) {
+		this.choixProprietaire = choixProprietaire;
+	}
+	
+	
+	
+	
 	
 }

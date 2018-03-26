@@ -41,9 +41,7 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 		System.out.println(nom+" vient de créer une table d'une taille de "+taille+" joueurs");
 		this.listeEnregistrementClient.get(nom).notificationRejointPartie("Table créee : "+t.toString());
 		t.ajouterJoueur(listeJoueur.get(nom), this.listeEnregistrementClient.get(nom)); 
-		this.debutPartie(t);
-		//t.initPartie();
-		
+		t.initPartie();
 	} 
 
 	public ArrayList<Table> getListeTable() {
@@ -75,8 +73,7 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 		try {
 			this.listeTable.get(i).ajouterJoueur(listeJoueur.get(nom), this.listeEnregistrementClient.get(nom));
 			if((this.listeTable.get(i).getTypeTable() == "P") && (this.listeTable.get(i).getTotalJoueur() == 1)) {
-				//this.listeTable.get(i).initPartie();
-				this.debutPartie(this.listeTable.get(i));
+				this.listeTable.get(i).initPartie();
 			}
 			
 		} catch (IndexOutOfBoundsException e) {
@@ -100,14 +97,21 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 		return this.listeTable.get(i).toString();
 	}
 	
-	public void debutPartie (Table t) throws RemoteException{
-		System.out.println("Appel init");
-		t.initPartie();
-		//System.out.println("Appel fin");
-		//this.finPartie(t);
+	public void debutPartie (String nj) throws RemoteException{
+		
+		for (int i=0; i<this.listeTable.size();i++) {
+			for (String key : this.listeTable.get(i).getListeJoueur().keySet()) {
+				if(key.equals(nj)) {
+					this.listeTable.get(i).initPartie();
+				}
+			}
+			
+			
+		}
+		
 	}
 	
-	public int finPartie (Table t) throws RemoteException {
+	/*public int finPartie (Table t) throws RemoteException {
 		//Si table créee par joueur, on demande au joueur si il veut continuer, on notifie les autres, sinon on appel détruire table
 		Hashtable<String, IcallbackClient> listeEnregistrementJoueurTable = t.getListeEnregistrementClient();
 		
@@ -120,10 +124,10 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 			int choix = this.listeEnregistrementClient.get(t.getNomTable()).continuerPartie();
 			
 			if(choix == 2) {
-				/*this.detruireTable(t);
+				this.detruireTable(t);
 				for (String key : listeEnregistrementJoueurTable.keySet()) {
 					listeEnregistrementJoueurTable.get(key).notificationRejointPartie("Le créateur de la partie a supprimé sa table. Redirection vers le menu");
-				}*/
+				}
 				return 0;
 			}
 			else {
@@ -134,26 +138,102 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 	System.out.println("Fin fin partie");	
 	return 0;
 	
-	}
+	}*/
 	
 	public void detruireTable(String nomTable) throws RemoteException {
 		Table t = null;
+		int numeroTable=0;
 		for (int i = 0; i < listeTable.size(); i++) {
-			if (listeTable.get(i).getNomTable() == nomTable) {
+			if (listeTable.get(i).getNomTable().equals(nomTable)) {
 				t = listeTable.get(i);
+				numeroTable = t.getNumeroTable();
 			}
 		}
-		//Notification a tous les joueurs que le créateur détruit sa table
-		
-		System.out.println(t.getNomTable()+ " a détruit sa table: "+t.toString());
-		this.listeTable.remove(t.getNumeroTable()-1);
+		this.listeTable.remove(numeroTable-1);
 		System.out.println(this.afficherTable());
 	}
 
 	@Override
-	public void quitterTable(String nom, String nomtable) throws RemoteException {
+	public void quitterTable(String nom) throws RemoteException {
 		// TODO Auto-generated method stub
-		
+		Table t = null;
+		for (int i=0; i<this.listeTable.size();i++) {
+			for (String key : this.listeTable.get(i).getListeJoueur().keySet()) {
+				if(key.equals(nom)) {
+					t = this.listeTable.get(i);
+				}
+			}
+		}
+		t.retirerJoueur(nom);
+		System.out.println(nom+" a quitté la table "+t.getNomTable());
+	}
+	
+	public void initCasino() throws RemoteException {
+		for (int i =0; i<listeTable.size();i++) {
+			listeTable.get(i).initPartie();
+		}
 	}
 
+	@Override
+	public boolean isFinPartie(String n) throws RemoteException {
+		boolean finPartie = false;
+		for (int i=0; i<this.listeTable.size();i++) {
+			for (String key : this.listeTable.get(i).getListeJoueur().keySet()) {
+				if(key.equals(n)) {
+					 finPartie = this.listeTable.get(i).isPartieFinie();
+				}
+			}
+		}
+		return finPartie;
+	}
+	
+	@Override
+	public boolean isChoixProprietaireSet(String n) throws RemoteException {
+		boolean choixProp = false;
+		for (int i=0; i<this.listeTable.size();i++) {
+			for (String key : this.listeTable.get(i).getListeJoueur().keySet()) {
+				if(key.equals(n)) {
+					 choixProp = this.listeTable.get(i).isChoixProprietaire();
+				}
+			}
+		}
+		return choixProp;
+	}
+	public int getChoixProprietaire(String n) throws RemoteException {
+		int choixProp = 0;
+		for (int i=0; i<this.listeTable.size();i++) {
+			for (String key : this.listeTable.get(i).getListeJoueur().keySet()) {
+				if(key.equals(n)) {
+					 choixProp = this.listeTable.get(i).getChoixProprietaire();
+				}
+			}
+		}
+		return choixProp;
+	}
+	
+	
+	public void choixProprietaire(String nom, int choix) throws RemoteException{
+		Table t = null;
+		for (int i=0; i<this.listeTable.size();i++) {
+			for (String key : this.listeTable.get(i).getListeJoueur().keySet()) {
+				if(key.equals(nom)) {
+					t = this.listeTable.get(i);
+				}
+			}
+		}
+		for (String key2 : t.getListeEnregistrementClient().keySet()) {
+			t.listeEnregistrementClient.get(key2).setChoix(choix);
+		}		
+		t.setChoixProprietaire(choix);
+		System.out.println(t.getChoixProprietaire());
+		t.setChoixProprietaire(true);
+		if (choix == 2) {
+			System.out.println("Le proprietaire a choisi de detruire sa table");
+			this.detruireTable(nom);
+		}
+		else {
+			this.debutPartie(nom);
+		}
+	}
+	
 }

@@ -44,6 +44,7 @@ public class ConnexionServerImpl extends UnicastRemoteObject implements Iconnexi
 		ConnexionServerImpl obj = new ConnexionServerImpl();
 		Naming.rebind("Serveur", obj);
 		System.out.println("Serveur démarré");
+		//obj.casino.initCasino();
 	}
 
 

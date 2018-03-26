@@ -9,6 +9,7 @@ import java.rmi.server.Unreferenced;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import com.blackjack.client.connexion.ConnexionClient;
 import com.blackjack.client.outils.CompteARebours;
 import com.blackjack.client.outils.ControlSaisie;
 import com.blackjack.serveur.connexion.IconnexionServer;
@@ -20,10 +21,14 @@ public class CallbackClientImpl extends UnicastRemoteObject implements Icallback
 	private String nom;
 	private ControlSaisie cs = new ControlSaisie();
 	private CompteARebours car = new CompteARebours();
+	private boolean finPartie;
+	private ConnexionClient cc;
 	
-	public CallbackClientImpl(String nom) throws RemoteException {
+	public CallbackClientImpl(String nom, ConnexionClient cc) throws RemoteException {
 		super();
 		this.nom = nom;
+		this.finPartie = false;
+		this.cc = cc;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -158,5 +163,19 @@ public class CallbackClientImpl extends UnicastRemoteObject implements Icallback
 		System.out.println("connexion perdue");
 	}
 
+	
+
+	public void setFinPartie(boolean finPartie) throws RemoteException{
+		this.finPartie = finPartie;
+	}
+
+	public boolean isFinPartie() {
+		return finPartie;
+	}
+
+	@Override
+	public void setChoix(int i) throws RemoteException {
+		cc.setChoixProprietaire(i);
+	}
 
 }
