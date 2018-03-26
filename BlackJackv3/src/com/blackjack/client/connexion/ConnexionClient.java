@@ -5,6 +5,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import com.blackjack.client.callback.CallbackClientImpl;
 import com.blackjack.client.outils.ControlSaisie;
@@ -17,6 +18,7 @@ public class ConnexionClient {
 	private static ControlSaisie cs = new ControlSaisie();
 	private static ConnexionClient cc = new ConnexionClient(0);
 	private int choixProprietaire;
+	private CallbackClientImpl client;
 
 	public ConnexionClient(int choixProprietaire) {
 		super();
@@ -37,6 +39,7 @@ public class ConnexionClient {
 				System.out.println("Nom joueur?");
 				nom = sc.nextLine();
 		        CallbackClientImpl client = new CallbackClientImpl(nom, cc);
+		        cc.setClient(client);
 		        boolean finPartie = false;
 		        boolean proprietaire;
 		        int choixProprietaire = 0;
@@ -53,6 +56,7 @@ public class ConnexionClient {
 		        Icasino casino = (Icasino) Naming.lookup("//localhost/Casino");
 				
 				//proprietaire = cc.menu(nom, casino);
+				System.out.println(client);
 				cc.menu(nom, casino);
 		        
 				/*while (finPartie == false) {
@@ -176,7 +180,7 @@ public class ConnexionClient {
 				
 				System.out.println("Fin de la partie");
 				if(proprietaire) {
-					choixProprietaire = cc.continuerPartie();
+					choixProprietaire = this.continuerPartie();
 					//envoi choix au serveur
 					if (choixProprietaire == 1) {
 						System.out.println("La partie va reprendre");
@@ -189,36 +193,38 @@ public class ConnexionClient {
 					
 				}
 				else {
+
 					System.out.println("En attente choix créateur");
+					System.out.println(casino.isChoixProprietaireSet(nom));
 					Boolean choixProp = false;
-					while (choixProp.equals(false)) {
+					
+					while (true) {
 						if (casino.isChoixProprietaireSet(nom) == true) {
+							
+							System.out.println("if  "+cc.choixProprietaire);
 							choixProp = true;
+							break;
 						}
 					}
-					int choixProprietaire = casino.getChoixProprietaire(nom);
-					System.out.println(choixProprietaire);
-					if ( choixProprietaire == 2) {
+
+					if ( this.choixProprietaire == 2) {
 						System.out.println("Le propriétaire a choisi de détruire sa table, redirection vers le menu");
 						//cc.menu(nom, casino);
 						recommencer = false;
 					}
 					else{
 						System.out.println("La partie va reprendre dans 15 secondes");
-						if(cc.continuerPartie() == 2) {
+						if(this.continuerPartie() == 2) {
 							casino.quitterTable(nom);
 							//cc.menu(nom, casino);
 							recommencer = false;
-						}
-						else {
-							//cc.finPartie(casino, proprietaire);
 						}
 					}
 				}
 				
 			}
 			
-			cc.menu(nom, casino);
+			this.menu(nom, casino);
 	}
 	
 	public int continuerPartie() {
@@ -296,7 +302,14 @@ public class ConnexionClient {
 	public void setChoixProprietaire(int choixProprietaire){
 		this.choixProprietaire = choixProprietaire;
 	}
-	
-	
-	
+
+
+	public CallbackClientImpl getClient() {
+		return client;
+	}
+
+
+	public void setClient(CallbackClientImpl client) {
+		this.client = client;
+	}
 }

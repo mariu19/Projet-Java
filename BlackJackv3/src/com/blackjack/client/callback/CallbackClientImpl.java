@@ -165,7 +165,7 @@ public class CallbackClientImpl extends UnicastRemoteObject implements Icallback
 
 	
 
-	public void setFinPartie(boolean finPartie) throws RemoteException{
+	public synchronized void setFinPartie(boolean finPartie) throws RemoteException{
 		this.finPartie = finPartie;
 	}
 
@@ -174,8 +174,14 @@ public class CallbackClientImpl extends UnicastRemoteObject implements Icallback
 	}
 
 	@Override
-	public void setChoix(int i) throws RemoteException {
+	public synchronized void setChoix(int i) throws RemoteException {
 		cc.setChoixProprietaire(i);
+	}
+
+	@Override
+	public synchronized int getChoix() throws RemoteException {
+		int i = cc.getChoixProprietaire();
+		return i;
 	}
 
 }

@@ -215,6 +215,7 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 	public void choixProprietaire(String nom, int choix) throws RemoteException{
 		Table t = null;
 		for (int i=0; i<this.listeTable.size();i++) {
+			//System.out.println("Parcours table: "+this.listeTable.get(i).toString());
 			for (String key : this.listeTable.get(i).getListeJoueur().keySet()) {
 				if(key.equals(nom)) {
 					t = this.listeTable.get(i);
@@ -223,10 +224,14 @@ public class Casino extends UnicastRemoteObject implements Icasino {
 		}
 		for (String key2 : t.getListeEnregistrementClient().keySet()) {
 			t.listeEnregistrementClient.get(key2).setChoix(choix);
+			//System.out.println(key2+"  "+t.listeEnregistrementClient.get(key2).getChoix());
+			//System.out.println(t.listeEnregistrementClient.get(key2));
 		}		
 		t.setChoixProprietaire(choix);
-		System.out.println(t.getChoixProprietaire());
+		//System.out.println(t.getChoixProprietaire());
 		t.setChoixProprietaire(true);
+		//System.out.println(t.isChoixProprietaire());
+		//System.out.println(this);
 		if (choix == 2) {
 			System.out.println("Le proprietaire a choisi de detruire sa table");
 			this.detruireTable(nom);

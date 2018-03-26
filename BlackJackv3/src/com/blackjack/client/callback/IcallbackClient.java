@@ -12,4 +12,5 @@ public interface IcallbackClient extends Remote {
 	public int continuerPartie() throws RemoteException;
 	public void setFinPartie(boolean finPartie) throws RemoteException;
 	public void setChoix(int i) throws RemoteException;
+	public int getChoix() throws RemoteException;
 }
