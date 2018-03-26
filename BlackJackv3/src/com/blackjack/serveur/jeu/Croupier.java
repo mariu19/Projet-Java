@@ -71,7 +71,7 @@ public class Croupier {
 		return hit;
 	}
 	
-	public void distribuer(ConcurrentHashMap<String, Joueur> listeJoueur, Hashtable<String, IcallbackClient> listeEnregistrementClient) throws RemoteException {
+	public void distribuer(ConcurrentHashMap<String, Joueur> listeJoueur, ConcurrentHashMap<String, IcallbackClient> listeEnregistrementClient) throws RemoteException {
 		
 		for (String key : listeJoueur.keySet()) {
 			Carte carte = deck.distribuer(listeJoueur.get(key).getMain());
@@ -122,7 +122,7 @@ public class Croupier {
 		affichageClient.notificationRejointPartie("Vous piochez "+ carte.toString());
 	}
 	
-	public void croupierPioche(ConcurrentHashMap<String, Joueur> listeJoueur, Hashtable<String, IcallbackClient> listeEnregistrementClient) throws RemoteException {
+	public void croupierPioche(ConcurrentHashMap<String, Joueur> listeJoueur, ConcurrentHashMap<String, IcallbackClient> listeEnregistrementClient) throws RemoteException {
 		for (String key : listeJoueur.keySet()) {
 			listeEnregistrementClient.get(key).notificationRejointPartie("Main du croupier :"+ this.getMain().toString());
 		}

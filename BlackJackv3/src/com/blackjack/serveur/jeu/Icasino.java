@@ -18,4 +18,5 @@ public interface Icasino extends Remote  {
 	public void choixProprietaire(String nom, int choix) throws RemoteException;
 	boolean isChoixProprietaireSet(String n) throws RemoteException;
 	int getChoixProprietaire(String n) throws RemoteException;
+	public String typeTable(int i) throws RemoteException;
 }

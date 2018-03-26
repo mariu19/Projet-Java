@@ -16,28 +16,28 @@ public class Table extends UnicastRemoteObject {
 	private String nomTable;
 	private int tailleTable;
 	private ConcurrentHashMap<String, Joueur> listeJoueur = null;
-	private Hashtable<String, Joueur> listedAttente = null;
-	Hashtable<String, IcallbackClient> listeEnregistrementClient = null;
+	private ConcurrentHashMap<String, Joueur> listedAttente = null;
+	ConcurrentHashMap<String, IcallbackClient> listeEnregistrementClient = null;
 	private int numeroTable, choixProprietaire;
 	private boolean partieDebute, partieFinie, bChoixProprietaire;
 	private Croupier croupier;
 	private String typeTable;
 
 	
-	public Table(int numeroTable, String nomTable, int tailleTable, String typeTable) throws RemoteException{
+	public Table(int numeroTable, String nomTable, int tailleTable, String typeTable, boolean bChoixProprietaire, int choixProprietaire) throws RemoteException{
 		super();
 		this.nomTable = nomTable;
 		this.tailleTable = tailleTable;
 		this.listeJoueur = new ConcurrentHashMap<String, Joueur>();
-		this.listedAttente = new Hashtable<String, Joueur>();
-		this.listeEnregistrementClient = new Hashtable<String, IcallbackClient>();
+		this.listedAttente = new ConcurrentHashMap<String, Joueur>();
+		this.listeEnregistrementClient = new ConcurrentHashMap<String, IcallbackClient>();
 		this.numeroTable = numeroTable;
 		this.partieDebute = false;
 		this.croupier = new Croupier();
 		this.typeTable = typeTable;
 		this.partieFinie = false;
-		this.bChoixProprietaire = false;
-		this.choixProprietaire = 0;
+		this.bChoixProprietaire = bChoixProprietaire;
+		this.choixProprietaire = choixProprietaire;
 	}
 	
 	public void initPartie2() {
@@ -75,7 +75,7 @@ public class Table extends UnicastRemoteObject {
 	}
 
 	
-	public Hashtable<String, IcallbackClient> getListeEnregistrementClient() {
+	public ConcurrentHashMap<String, IcallbackClient> getListeEnregistrementClient() {
 		return listeEnregistrementClient;
 	}
 
@@ -84,7 +84,7 @@ public class Table extends UnicastRemoteObject {
 		return tailleTable;
 	}
 	
-	public Hashtable<String, Joueur> getListedAttente() {
+	public ConcurrentHashMap<String, Joueur> getListedAttente() {
 		return listedAttente;
 	}
 
@@ -196,11 +196,7 @@ public class Table extends UnicastRemoteObject {
 		
 		}
 		
-		for (String key : this.listedAttente.keySet()) {
-			Joueur j = this.listedAttente.get(key);
-			this.listeJoueur.put(key, j);
-			this.listedAttente.remove(key);
-		}
+
 		
 		System.out.println("\nDébut partie ");	
 		this.setPartieDebute(true);
@@ -240,7 +236,32 @@ public class Table extends UnicastRemoteObject {
 			croupier.getMain().clearMains();
 		}
 		
-
+		for (String key : this.listedAttente.keySet()) {
+			Joueur j = this.listedAttente.get(key);
+			this.listeJoueur.put(key, j);
+			this.listedAttente.remove(key);
+		}
+		
+		if(this.typeTable == "T"){
+			this.setChoixProprietaire(false);
+		}
+		
+		if(this.typeTable == "P"){
+			for (String key : this.listeEnregistrementClient.keySet()) {
+				
+				for (String key3 : this.listeEnregistrementClient.keySet()) {
+					this.listeEnregistrementClient.get(key3).notificationRejointPartie("En attente choix joueur "+key);
+					}
+				int choix = this.listeEnregistrementClient.get(key).continuerPartie();
+				this.listeEnregistrementClient.get(key).setChoixJoueur(choix);
+				if (choix == 2) {
+					this.retirerJoueur(key);
+				}
+			}
+			if(this.listeEnregistrementClient.size() > 0) {
+				this.initPartie();
+			}
+		}
 		this.partieFinie = true;
 	}
 
@@ -267,6 +288,15 @@ public class Table extends UnicastRemoteObject {
 	public void setChoixProprietaire(int choixProprietaire) {
 		this.choixProprietaire = choixProprietaire;
 	}
+	
+	public void gestionFinPartie() {
+		
+	}
+
+	public void setTypeTable(String typeTable) {
+		this.typeTable = typeTable;
+	}
+	
 	
 	
 	

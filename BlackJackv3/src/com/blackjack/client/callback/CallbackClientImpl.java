@@ -177,6 +177,15 @@ public class CallbackClientImpl extends UnicastRemoteObject implements Icallback
 	public synchronized void setChoix(int i) throws RemoteException {
 		cc.setChoixProprietaire(i);
 	}
+	@Override
+	public synchronized void setChoixJoueur(int i) throws RemoteException {
+		cc.setChoixJoueur(i);
+	}
+	@Override
+	public synchronized int getChoixJoueur() throws RemoteException {
+		int i = cc.getChoixJoueur();
+		return i;
+	}
 
 	@Override
 	public synchronized int getChoix() throws RemoteException {
